@@ -1,68 +1,7 @@
 [
   {
     "arguments": [
-      "/usr/bin/gcc",
-      "-c",
-      "-DSQLITE_HAS_CODEC",
-      "-I/opt/homebrew/opt/openssl@3/include",
-      "-DSQLCIPHER_CRYPTO_OPENSSL",
-      "-o",
-      "mksourceid",
-      "/Users/bytedance/sqlcipher/tool/mksourceid.c"
-    ],
-    "directory": "/Users/bytedance/sqlcipher",
-    "file": "/Users/bytedance/sqlcipher/tool/mksourceid.c",
-    "output": "/Users/bytedance/sqlcipher/mksourceid"
-  },
-  {
-    "arguments": [
-      "/usr/bin/gcc",
-      "-c",
-      "-DSQLITE_HAS_CODEC",
-      "-I/opt/homebrew/opt/openssl@3/include",
-      "-DSQLCIPHER_CRYPTO_OPENSSL",
-      "-DSQLITE_ENABLE_MATH_FUNCTIONS",
-      "-o",
-      "mkkeywordhash",
-      "/Users/bytedance/sqlcipher/tool/mkkeywordhash.c"
-    ],
-    "directory": "/Users/bytedance/sqlcipher",
-    "file": "/Users/bytedance/sqlcipher/tool/mkkeywordhash.c",
-    "output": "/Users/bytedance/sqlcipher/mkkeywordhash"
-  },
-  {
-    "arguments": [
-      "/usr/bin/gcc",
-      "-c",
-      "-DSQLITE_HAS_CODEC",
-      "-I/opt/homebrew/opt/openssl@3/include",
-      "-DSQLCIPHER_CRYPTO_OPENSSL",
-      "-o",
-      "lemon",
-      "/Users/bytedance/sqlcipher/tool/lemon.c"
-    ],
-    "directory": "/Users/bytedance/sqlcipher",
-    "file": "/Users/bytedance/sqlcipher/tool/lemon.c",
-    "output": "/Users/bytedance/sqlcipher/lemon"
-  },
-  {
-    "arguments": [
-      "/usr/bin/gcc",
-      "-c",
-      "-DSQLITE_HAS_CODEC",
-      "-I/opt/homebrew/opt/openssl@3/include",
-      "-DSQLCIPHER_CRYPTO_OPENSSL",
-      "-o",
-      "src-verify",
-      "/Users/bytedance/sqlcipher/tool/src-verify.c"
-    ],
-    "directory": "/Users/bytedance/sqlcipher",
-    "file": "/Users/bytedance/sqlcipher/tool/src-verify.c",
-    "output": "/Users/bytedance/sqlcipher/src-verify"
-  },
-  {
-    "arguments": [
-      "/usr/bin/gcc",
+      "/usr/bin/clang",
       "-DSQLITE_HAS_CODEC",
       "-I/opt/homebrew/opt/openssl@3/include",
       "-DSQLCIPHER_CRYPTO_OPENSSL",
@@ -95,7 +34,7 @@
   },
   {
     "arguments": [
-      "/usr/bin/gcc",
+      "/usr/bin/clang",
       "-DSQLITE_HAS_CODEC",
       "-I/opt/homebrew/opt/openssl@3/include",
       "-DSQLCIPHER_CRYPTO_OPENSSL",
@@ -126,7 +65,7 @@
   },
   {
     "arguments": [
-      "/usr/bin/gcc",
+      "/usr/bin/clang",
       "-c",
       "-DSQLITE_HAS_CODEC",
       "-I/opt/homebrew/opt/openssl@3/include",
@@ -170,7 +109,7 @@
   },
   {
     "arguments": [
-      "/usr/bin/gcc",
+      "/usr/bin/clang",
       "-c",
       "-DSQLITE_HAS_CODEC",
       "-I/opt/homebrew/opt/openssl@3/include",
