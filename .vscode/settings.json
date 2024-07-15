@@ -1,0 +1,164 @@
+{
+    // 让clangd不要自动添加头文件，默认情况下clangd遵循IWYU原则会把你用到的类全都直接包含进来导致文件头部一堆的#include
+    "clangd.arguments": [
+        // 全局补全(补全建议会给出在当前作用域不可见的索引,插入后自动补充作用域标识符),例如在main()中直接写cout,
+        // 即使没有`#include <iostream>`,也会给出`std::cout`的建议,配合"--header-insertion=iwyu",
+        // 还可自动插入缺失的头文件
+        "--all-scopes-completion",
+        // 补全函数时，将会给参数提供占位符，键入后按 Tab 可以切换到下一占位符，乃至函数末
+        "--function-arg-placeholders=true",
+        // 输入建议中，已包含头文件的项与还未包含头文件的项会以圆点加以区分
+        "--header-insertion-decorators",
+        // 启用 Clang-Tidy 以提供「静态检查」
+        "--clang-tidy",
+        // Clang-Tidy 静态检查的参数，指出按照哪些规则进行静态检查，详情见「与按照官方文档配置好的 VSCode 相比拥有的优势」
+        // 参数后部分的*表示通配符
+        // 在参数前加入-，如-modernize-use-trailing-return-type，将会禁用某一规则
+        "--clang-tidy-checks=cppcoreguidelines-*,performance-*,bugprone-*,misc-*,portability-*,modernize-*,google-*,readability-*",
+        "--header-insertion=never",
+        // 后台分析并保存索引文件
+        "--background-index",
+
+        // 默认格式化风格: 谷歌开源项目代码指南
+        // "--fallback-style=file",
+
+        // compelie_commands.json 文件的目录位置(相对于工作区，由于 CMake 生成的该文件默认在 build 文件夹中，故设置为 build)
+        // ${workspaceFolder}/android/librespool/.cxx/cmake/debug/arm64-v8a/compile_commands.json
+        "--compile-commands-dir=${workspaceFolder}/",
+        // 当 clangd 准备就绪时，用它来分析建议
+        "--completion-parse=auto",
+        // 同时开启的任务数量
+        "--j=8",
+        // 重命名符号的时候会跨越文件进行重构
+        "--cross-file-rename",
+        // 更详细的补全内容
+        "--completion-style=detailed",
+        // pch 优化的位置(Memory 或 Disk,前者会增加内存开销，但会提升性能)
+        "--pch-storage=memory",
+        // 输出的 JSON 文件更美观
+        "--pretty",
+        // pch优化的位置(memory 或 disk，选择memory会增加内存开销，但会提升性能) 推荐在板子上使用disk
+        "--pch-storage=disk",
+        // 让 Clangd 生成更详细的日志
+        "--log=verbose",
+        // 启用配置文件(YAML格式)项目配置文件是在项目文件夹里的“.clangd”,用户配置文件是“clangd/config.yaml”,
+        // 该文件来自:Windows: %USERPROFILE%\AppData\Local || MacOS: ~/Library/Preferences/ || Others: $XDG_CONFIG_HOME, usually ~/.config
+        "--enable-config",
+        "--query-driver=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++",
+    ],
+    "cmake.cmakePath": "/opt/homebrew/bin/cmake",
+    // 使用Ninja编译时能更快一些，而且能看进度，生成VS的sln项目构建时看不到……
+    "cmake.generator": "Ninja",
+    // 设置并行编译数量，建议比核心数少1到2个，这个在我本地试的情况是能有效缓解白屏
+    // 在VS的Options>Projects and Solutions>Build And Run里虽然可以设置并行编译的数量，但个人实测对卡白屏的缓解效果有限
+    "cmake.parallelJobs": 8,
+    // 从字节的服务器上加载调试符号
+    "cmake.debugConfig": {
+        "symbolSearchPath": "https://symbolicate.byted.org/windows_symbols"
+    },
+
+    // 如果你直接打开VideoFusion-win目录，则不用配置这个项
+    // 我习惯把VideoFusion-win和videoeditor放到同一个目录再打开它们的上级目录，这样的话需要告诉它
+    // 该用哪个CMakeLists.txt
+    // 默认的生成文件夹就是build
+    "cmake.buildDirectory": "${workspaceFolder}/build/",
+    // "cmake.buildDirectory": "${workspaceFolder}/build-oversea",
+    "cmake.sourceDirectory": "${workspaceFolder}/cpp/",
+    // 参考makeprj.bat和makeprj_oversea.bat来配置不同的参数，以生成国内或海外工程
+    "cmake.configureArgs": [
+        // "-G Ninja",
+        // "-DCMAKE_C_COMPILER=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang",
+        // "-DCMAKE_CXX_COMPILER=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++",
+        // "-DCMAKE_OSX_ARCHITECTURES=arm64",
+        "-DCMAKE_BUILD_TYPE=Debug",
+        "-DENABLE_PCH=0",
+        "-S${workspaceFolder}/cpp/",
+        "-B${workspaceFolder}/build/",
+    ],
+
+    // FIXME: =========================================================================
+    // 1. cmake执行是：cd到build，执行 cmake -DCMAKE_BUILD_TYPE=Debug -G Xcode -D CMAKE_OSX_ARCHITECTURES="arm64" ../VideoFusion-win
+    // 2. "-DENABLE_PCH=0"，得关掉pch，objective-c需要关闭？？？？？？
+    // ================================================================================
+
+      // clangd
+      "C_Cpp.inlayHints.autoDeclarationTypes.enabled": false,
+      "C_Cpp.default.compilerPath": "/usr/bin/clang++",
+      "clang.cxxflags": [
+          "-std=c++17",
+          "-O3",
+          "-flto",
+          "-Wl",
+      ],
+      "C_Cpp.codeAnalysis.clangTidy.enabled": true,
+      "C_Cpp.codeAnalysis.clangTidy.config": "~/pc_project/videoeditor/.clang-tidy",
+      "C_Cpp.codeAnalysis.clangTidy.fallbackConfig": "~/pc_project/videoeditor/.clang-tidy",
+      "C_Cpp.codeAnalysis.clangTidy.checks.enabled": [
+          "*"
+      ],
+      // "C_Cpp.intelliSenseEngineFallback": "enabled",
+      "C_Cpp.errorSquiggles": "disabled",
+      "C_Cpp.intelliSenseEngine": "disabled",
+      "C_Cpp.autocomplete": "disabled",
+      "clangd.fallbackFlags": [
+          // 设置clangd代码检查的c++版本
+          "-std=c++17",
+          "-pedantic",
+          "-Wall",
+          "-Wextra",
+          "-Wcast-align",
+          "-Wdouble-promotion",
+          "-Wformat=2",
+          "-Wimplicit-fallthrough",
+          "-Wmisleading-indentation",
+          "-Wnon-virtual-dtor",
+          "-Wnull-dereference",
+          "-Wold-style-cast",
+          "-Woverloaded-virtual",
+          "-Wpedantic",
+          "-Wshadow",
+          "-Wunused",
+          "-pthread",
+          "-fuse-ld=lld",
+
+          "-fsanitize=address",
+          "-fsanitize=leak",
+          "-fsanitize=thread",
+          "-fsanitize=undefined",
+          "-fsanitize=memory",
+
+          "-stdlib=libc++",
+          "-Wno-unused-variable",
+          "-Wno-shadow",
+          "-Wshadow-field-in-constructor-modified",
+          "-Wshadow-ivar",
+          "-Wno-implicit-function-declaration",
+          "-Wno-switch",
+          "-Wno-parentheses",
+          "-Wbitwise-op-parentheses",
+          "-Wdangling-else",
+          "-Wlogical-not-parentheses",
+          "-Wlogical-op-parentheses",
+          "-Woverloaded-shift-op-parentheses",
+          "-Wparentheses-equality",
+          "-Wshift-op-parentheses",
+          // 关闭 #pragma once 警告
+          "-Wno-pragma-once-outside-header",
+
+          "-DCCORE_MAC",
+          "-DCOREMAC",
+          "-DLYRA_API_EXPORT",
+
+          "-I${workspaceFolder}/", // 项目根目录
+
+          "-I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/",
+          "-I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/",
+          "-I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include/",
+          "-I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/",
+          "-I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/",
+          "-I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/",
+          "-I~/Library/Android/sdk/ndk/21.3.6528147/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/",
+      ],
+    "clangd.checkUpdates": false,
+    "gitConfigUser.selectedProfile": "gexianglin",
+}

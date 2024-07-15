@@ -1,0 +1,31 @@
+{
+    "version": "2.0.0",
+    "echoCommand": true,
+    "options": {
+        // 这里指定tasks 的运行目录，默认是${workspaceRoot}，也就是.vscode/..
+        "cwd": "${workspaceRoot}/"
+    },
+    "tasks": [
+        {
+            "isBackground": false,
+            // 这个task完成编译工作，调用的是MSBuild
+            "label": "clean",
+            "type": "shell",
+            "command": "make",
+            "args": ["clean"]
+        },
+        {
+            "isBackground": false,
+            // 这个task完成动态库的拷贝
+            "label": "make",
+            "type": "shell",
+            "command": "bear -- make",
+            "args": [],
+            // "dependsOn":["clean"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+        }
+    ]
+}
